@@ -45,7 +45,28 @@ jobs:
           make ${args} ${{ env.KERNEL_TARGET }}_defconfig
           make -j$(($(getconf _NPROCESSORS_ONLN) * 2)) ${args}
 
-      - name: Package kernel
+      - name: "Upload Image"
+        uses: actions/upload-artifact@v3
+        with:
+          name: Image-${{ env.KERNEL_VERSION }}_${{ env.KERNEL_TARGET }}
+          path: out/arch/arm64/boot/Image
+          if-no-files-found: ignore
+
+      - name: "Upload dtbo.img"
+        uses: actions/upload-artifact@v3
+        with:
+          name: dtbo.img-${{ env.KERNEL_VERSION }}_${{ env.KERNEL_TARGET }}
+          path: out/arch/arm64/boot/dtbo.img
+          if-no-files-found: ignore
+
+      - name: "Upload dtb"
+        uses: actions/upload-artifact@v3
+        with:
+          name: dtb-${{ env.KERNEL_VERSION }}_${{ env.KERNEL_TARGET }}
+          path: out/arch/arm64/boot/dtb
+          if-no-files-found: ignore
+
+      - name: Package AnyKernel
         run: |
           git clone --depth=1 ${{ env.ANYKERNEL_SOURCE }} -b ${{ env.ANYKERNEL_SOURCE_BRANCH }} AnyKernel3 && rm -rf AnyKernel3/.git AnyKernel3/.github AnyKernel3/LICENSE AnyKernel3/README.md
           if [ -f out/arch/arm64/boot/Image ]; then
@@ -58,7 +79,7 @@ jobs:
             cp out/arch/arm64/boot/dtb AnyKernel3/dtb
           fi
 
-      - name: Upload kernel to artifact
+      - name: Upload AnyKernel to artifact
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.KERNEL_VERSION }}_${{ env.KERNEL_TARGET }}
