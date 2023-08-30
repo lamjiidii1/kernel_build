@@ -65,22 +65,3 @@ jobs:
           name: dtb-${{ env.KERNEL_VERSION }}_${{ env.KERNEL_TARGET }}
           path: out/arch/arm64/boot/dtb
           if-no-files-found: ignore
-
-      - name: Package AnyKernel
-        run: |
-          git clone --depth=1 ${{ env.ANYKERNEL_SOURCE }} -b ${{ env.ANYKERNEL_SOURCE_BRANCH }} AnyKernel3 && rm -rf AnyKernel3/.git AnyKernel3/.github AnyKernel3/LICENSE AnyKernel3/README.md
-          if [ -f out/arch/arm64/boot/Image ]; then
-            cp out/arch/arm64/boot/Image AnyKernel3/Image
-          fi
-          if [ -f out/arch/arm64/boot/dtbo.img ]; then
-            cp out/arch/arm64/boot/dtbo.img AnyKernel3/dtbo.img
-          fi
-          if [ -f out/arch/arm64/boot/dtb ]; then
-            cp out/arch/arm64/boot/dtb AnyKernel3/dtb
-          fi
-
-      - name: Upload AnyKernel to artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ env.KERNEL_VERSION }}_${{ env.KERNEL_TARGET }}
-          path: AnyKernel3/*
