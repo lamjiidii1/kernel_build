@@ -45,7 +45,7 @@ jobs:
           make ${args} ${{ env.KERNEL_TARGET }}_defconfig
           make -j$(($(getconf _NPROCESSORS_ONLN) * 2)) ${args}
 
-      - name: "Upload Image"
+      - name: "Upload Kernel Image"
         uses: actions/upload-artifact@v3
         with:
           name: Image-${{ env.KERNEL_VERSION }}_${{ env.KERNEL_TARGET }}
@@ -63,5 +63,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: dtb-${{ env.KERNEL_VERSION }}_${{ env.KERNEL_TARGET }}
-          path: out/arch/arm64/boot/dtb
+          path: out/arch/arm64/boot/dts/vendor/qcom/kona.dtb
           if-no-files-found: ignore
