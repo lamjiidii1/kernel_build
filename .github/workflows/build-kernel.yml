@@ -20,7 +20,7 @@ jobs:
       - name: Pull kernel source
         run: |
           git clone --depth=1 https://github.com/crdroidandroid/android_kernel_xiaomi_sm8250 -b 13.0-alioth kernel-source
-          cd kernel-source
+          export KERNEL_PATH=kernel-source
 
       - name: Checkout Kernel-SU
         run: |
@@ -28,6 +28,7 @@ jobs:
 
       - name: Setup environment
         run: |
+          sh -c "$(curl -sSL https://github.com/akhilnarang/scripts/raw/master/setup/android_build_env.sh/)"
           KERNEL_DEFCONFIG=alioth_defconfig
           ANYKERNEL3_DIR=$PWD/AnyKernel3/
           FINAL_KERNEL_ZIP=InfiniR_Alioth_v2.77.zip
@@ -40,12 +41,14 @@ jobs:
           yellow='\033[1;33m'
           nocol='\033[0m'
 
-          echo -e "$yellow**** Cleaning ****$nocol"
-          rm -rf out
-          mkdir -p out
-
       - name: Build kernel
         run: |
+          cd KERNEL_PATH
+
+          echo -e "$yellow**** Cleaning ****$nocol"
+          mkdir -p out
+          make O=out clean
+
           echo -e "$yellow**** Kernel defconfig is set to $KERNEL_DEFCONFIG ****$nocol"
           echo -e "$blue***********************************************"
           echo "          BUILDING KERNEL          "
