@@ -19,10 +19,7 @@ jobs:
 
       - name: Pull kernel source
         run: |
-          echo "KERNEL_SOURCE=$(cat config.env | grep -w "KERNEL_SOURCE" | head -n 1 | cut -d "=" -f 2)" >> $GITHUB_ENV
-          echo "KERNEL_SOURCE_BRANCH=$(cat config.env | grep -w "KERNEL_SOURCE_BRANCH" | head -n 1 | cut -d "=" -f 2)" >> $GITHUB_ENV
-          git clone --depth=1 ${{ env.KERNEL_SOURCE }} -b ${{ env.KERNEL_SOURCE_BRANCH }} kernel-source
-          echo "KERNEL_VERSION="$(cat kernel-source/arch/arm64/configs/${{ env.KERNEL_TARGET }}_defconfig | grep "CONFIG_LOCALVERSION\=" | sed -r 's/.*"(.+)".*/\1/' | sed 's/^.//')"" >> $GITHUB_ENV
+          git clone --depth=1 https://github.com/crdroidandroid/android_kernel_xiaomi_sm8250 -b 13.0-alioth kernel-source
           cd kernel-source
 
       - name: Checkout Kernel-SU
@@ -44,8 +41,8 @@ jobs:
           nocol='\033[0m'
 
           echo -e "$yellow**** Cleaning ****$nocol"
+          rm -rf out
           mkdir -p out
-          make O=out clean
 
       - name: Build kernel
         run: |
